@@ -1,6 +1,3 @@
-from re import T
-from tkinter import EXCEPTION
-from traceback import print_tb
 import requests
 import json
 import random
