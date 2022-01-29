@@ -13,4 +13,3 @@ Short script uses two API's
 - Tweepy
 - Json
 - datetime
-# Daily-Random-Facts
