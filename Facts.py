@@ -88,4 +88,5 @@ class TwitterBot:
 if __name__ == '__main__':
     t = TwitterBot()
     t.check()
+    t.API.update_status("Bot has Deployed")
     t.run()
