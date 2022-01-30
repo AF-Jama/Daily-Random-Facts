@@ -1,15 +1,18 @@
+import imp
 from re import T
+from time import time
 import requests
 import json
 import random
 from datetime import datetime
 import tweepy
+import time
 
 
 class FactFetcher:
     '''fetches random facts using API'''
     def __init__(self) -> None:
-        self.BASE = "https://uselessfacts.jsph.pl/" #base url
+        self.BASE = "https://uselessfacts.jsph.pl" #base url
 
     def random(self):
         '''get request to return'''
@@ -23,10 +26,10 @@ class FactFetcher:
         request = request.json()
         return request['text']
 
-    def choose(self):
-        '''method randomly chooses what type of fact is retrieved'''
-        list = [self.today(),self.random()]
-        return random.choice(list) # returns class method from list,return type is string
+    # def choose(self):
+    #     '''method randomly chooses what type of fact is retrieved'''
+    #     list = [self.today(),self.random()]
+    #     return random.choice(list) # returns class method from list,return type is string
 
 
 
@@ -50,45 +53,40 @@ class TwitterBot:
 
     def tweet_now(self,message):
         #tweet contains a random fact so composition can be used
-        self.API.update_status(message)
+        try:   
+            self.API.update_status(message)
+            time.sleep(60.0)
+
+        except:
+            '''if any exception is triggered when updatating status/tweeting it will just be passed. most common exception is 187 - Status is a duplicate. '''
+            pass
 
 
     def schedule(self):
         '''logic for scheduling tweet a 5pm uk time and 12 pm est'''
         f = FactFetcher()
-        i = 0
-        while i<10:
-            date_now = datetime.now()
-            hour_now = datetime.strftime(date_now,"%H")
-            minute_now = datetime.strftime(date_now,"%M")
-            second_now = datetime.strftime(date_now,"%S")
-            self.API.update_status(f.choose())
-            i+=1
+        date_now = datetime.now()
+        hour_now = datetime.strftime(date_now,"%H")
+        minute_now = datetime.strftime(date_now,"%M")
+        second_now = datetime.strftime(date_now,"%S")
+        if int(minute_now) %5 == 0:
+            #triggered update status if evaluates to True
+            self.tweet_now(f.random()) # updates status/tweeting at 5pm
 
-            # if hour_now == '17' and minute_now == '00' and second_now == '01':
-            #     #triggered update status if evaluates to True
-            #     self.API.update_status(f.choose()) # updates status/tweeting at 5pm
-
-            # else:
-            #     #triggered when if statement does not evaluate to True
-            #     pass
+        else:
+            #triggered when if statement does not evaluate to True
+            pass
 
 
-    # def run(self):
-    #     #runs logic in loop and triggers when condition is met
-    #     count = 1
-    #     while True:
-    #         self.schedule()
+    def run(self):
+        while True:
+            self.schedule()
             
 
-
-# t = TwitterBot()
-# t.check()
-# t.run()
 
 
 
 if __name__ == '__main__':
     t = TwitterBot()
     t.check()
-    t.schedule()
+    t.run()
