@@ -1,3 +1,4 @@
+from re import T
 import requests
 import json
 import random
@@ -55,24 +56,29 @@ class TwitterBot:
     def schedule(self):
         '''logic for scheduling tweet a 5pm uk time and 12 pm est'''
         f = FactFetcher()
-        date_now = datetime.now()
-        hour_now = datetime.strftime(date_now,"%H")
-        minute_now = datetime.strftime(date_now,"%M")
-        second_now = datetime.strftime(date_now,"%S")
-        if hour_now == '17' and minute_now == '00' and second_now == '01':
-            #triggered update status if evaluates to True
-            self.API.update_status(f.choose()) # updates status/tweeting at 5pm
+        i = 0
+        while i<10:
+            date_now = datetime.now()
+            hour_now = datetime.strftime(date_now,"%H")
+            minute_now = datetime.strftime(date_now,"%M")
+            second_now = datetime.strftime(date_now,"%S")
+            self.API.update_status(f.choose())
+            i+=1
 
-        else:
-            #triggered when if statement does not evaluate to True
-            pass
+            # if hour_now == '17' and minute_now == '00' and second_now == '01':
+            #     #triggered update status if evaluates to True
+            #     self.API.update_status(f.choose()) # updates status/tweeting at 5pm
+
+            # else:
+            #     #triggered when if statement does not evaluate to True
+            #     pass
 
 
-    def run(self):
-        #runs logic in loop and triggers when condition is met
-        count = 1
-        while True:
-            self.schedule()
+    # def run(self):
+    #     #runs logic in loop and triggers when condition is met
+    #     count = 1
+    #     while True:
+    #         self.schedule()
             
 
 
@@ -85,5 +91,4 @@ class TwitterBot:
 if __name__ == '__main__':
     t = TwitterBot()
     t.check()
-    t.API.update_status("Bot has Deployed")
-    t.run()
+    t.schedule()
