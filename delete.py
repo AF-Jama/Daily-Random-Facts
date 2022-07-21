@@ -36,7 +36,6 @@ class TwitterBot:
             print("Error")
 
              
-
 t = TwitterBot()
 # t.check()
 # print(t.get_tweets()[0]. _json['id'])

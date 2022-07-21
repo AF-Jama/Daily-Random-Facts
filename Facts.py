@@ -50,14 +50,14 @@ class TwitterBot:
         #tweet contains a random fact so composition can be used
         try:   
             if message not in TwitterBot.fact_set:
-                '''triggers block if message is not already in list of tweets'''
+                '''triggers block if message is not already in set of unique tweets'''
                 print("Tweeted")
                 self.API.update_status(message)
                 TwitterBot.fact_set.add(message) # appends message into list 
                 time.sleep(300.0)
 
             else:
-                '''triggered if message is in list'''
+                '''triggered if message is in set which signifies it has already been tweeted'''
                 pass    
 
         except:
