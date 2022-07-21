@@ -1,12 +1,10 @@
-import imp
-from re import T
-from time import time
 import requests
 import json
 import random
 from datetime import datetime
 import tweepy
 import time
+from config import configuration
 
 
 class FactFetcher:
@@ -34,13 +32,10 @@ class FactFetcher:
 
 
 class TwitterBot:
+    fact_set = set() # creates set to store facts to ensure there are no duplicates
     def __init__(self) -> None:
         '''Keys are initalised here when an object is created'''
-        APIKEY  = "F6AMMqXJY5BstWnU5dQKF6l3Z"
-        KEYSECRET = "xCQvK8a9Ntxz60Z1RCcdeKQjawfJGFCDvPb379kHIjQWvCxAgE"
-        BK = "AAAAAAAAAAAAAAAAAAAAAJ2BYgEAAAAASxgTRoUzE%2FG866sHUTqL41oT2Cs%3DwzbGyDoCcUjJuM2Rkm5siJGhyMVe7YBD381pc72AXhBKW9hW5C"
-        AK = "1486796514815102986-q17H0xRXWoz0Sn5Ulbt6of8TjrCgvl"
-        AKS = "ogMvkLJLrz3Ya9pkSwHNa3nl8gJZZZdPSb6HvfF9suQsF"
+        APIKEY,KEYSECRET,BK,AK,AKS = configuration.values()
         auth = tweepy.OAuth1UserHandler(APIKEY,KEYSECRET,AK,AKS)
         self.API = tweepy.API(auth) # Creates Twitter API object
 
@@ -54,8 +49,16 @@ class TwitterBot:
     def tweet_now(self,message):
         #tweet contains a random fact so composition can be used
         try:   
-            self.API.update_status(message)
-            time.sleep(60.0)
+            if message not in TwitterBot.fact_set:
+                '''triggers block if message is not already in list of tweets'''
+                print("Tweeted")
+                self.API.update_status(message)
+                TwitterBot.fact_set.add(message) # appends message into list 
+                time.sleep(300.0)
+
+            else:
+                '''triggered if message is in list'''
+                pass    
 
         except:
             '''if any exception is triggered when updatating status/tweeting it will just be passed. most common exception is 187 - Status is a duplicate. '''
